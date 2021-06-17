@@ -1,34 +1,34 @@
-class Movie {
-  int page;
-  int totalResults;
-  int totalPages;
-  List<Results> results;
-  Dates dates;
+class MovieModel {
+  int? page;
+  int? totalResults;
+  int? totalPages;
+  List<Results>? results;
+  Dates? dates;
 
-  Movie({this.page, this.totalResults, this.totalPages, this.results});
-  Movie.withDate(
+  MovieModel({this.page, this.totalResults, this.totalPages, this.results});
+  MovieModel.withDate(
       {this.results,
       this.page,
       this.totalResults,
       this.dates,
       this.totalPages});
 
-  Movie.fromJson(Map<String, dynamic> json) {
+  MovieModel.fromJson(Map<String, dynamic> json) {
     page = json['page'];
     totalResults = json['total_results'];
     totalPages = json['total_pages'];
     if (json['results'] != null) {
-      results = new List<Results>();
+      results = <Results>[];
       json['results'].forEach((v) {
-        results.add(new Results.fromJson(v));
+        results!.add(new Results.fromJson(v));
       });
     }
   }
-  Movie.fromJsonWithDate(Map<String, dynamic> json) {
+  MovieModel.fromJsonWithDate(Map<String, dynamic> json) {
     if (json['results'] != null) {
-      results = new List<Results>();
+      results = <Results>[];
       json['results'].forEach((v) {
-        results.add(new Results.fromJson(v));
+        results!.add(new Results.fromJson(v));
       });
     }
     page = json['page'];
@@ -43,7 +43,7 @@ class Movie {
     data['total_results'] = this.totalResults;
     data['total_pages'] = this.totalPages;
     if (this.results != null) {
-      data['results'] = this.results.map((v) => v.toJson()).toList();
+      data['results'] = this.results!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -51,19 +51,19 @@ class Movie {
 
 class Results {
   var popularity;
-  int voteCount;
-  bool video;
-  String posterPath;
-  int id;
-  bool adult;
-  String backdropPath;
-  String originalLanguage;
-  String originalTitle;
-  List<int> genreIds;
-  String title;
+  int? voteCount;
+  bool? video;
+  String? posterPath;
+  int? id;
+  bool? adult;
+  String? backdropPath;
+  String? originalLanguage;
+  String? originalTitle;
+  List<int>? genreIds;
+  String? title;
   var voteAverage;
-  String overview;
-  String releaseDate;
+  String? overview;
+  String? releaseDate;
 
   Results(
       {this.popularity,
@@ -119,8 +119,8 @@ class Results {
 }
 
 class Dates {
-  String maximum;
-  String minimum;
+  String? maximum;
+  String? minimum;
 
   Dates({this.maximum, this.minimum});
 

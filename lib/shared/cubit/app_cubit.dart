@@ -1,13 +1,15 @@
 import 'package:bloc/bloc.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movie_app/models/movie_model.dart';
 import 'package:movie_app/screens/favorites/favorites_screen.dart';
 import 'package:movie_app/screens/movies/movies_screen.dart';
 import 'package:movie_app/screens/search/search_screen.dart';
 import 'package:movie_app/screens/tv_shows/tv_shows_screen.dart';
 import 'package:movie_app/shared/global/cache_helper.dart';
 import 'package:movie_app/shared/cubit/app_states.dart';
-
+import 'package:movie_app/shared/global/end_points.dart';
 
 class AppCubit extends Cubit<AppStates> {
   AppCubit() : super(InitialState());
@@ -154,4 +156,63 @@ class AppCubit extends Cubit<AppStates> {
   //     print(onError.toString());
   //   });
   // }
+
+  List<String> categoryList = [
+    'Popular',
+    'Top Rated',
+    'Upcoming',
+    'New Playing',
+  ];
+  String? selectedCategory;
+
+  MovieModel? movieModel;
+  int? pageNumber;
+  String? url;
+
+  void getMoviesByCategory() {
+    emit(GetCategoryLoadingState());
+    switch (selectedCategory) {
+      case 'Top Rated':
+        url =
+            'https://api.themoviedb.org/3/movie/top_rated?api_key=$kApiKey&language=en-US&page=$pageNumber';
+        break;
+      case 'Upcoming':
+        url =
+            'https://api.themoviedb.org/3/movie/upcoming?api_key=$kApiKey&language=en-US&page=$pageNumber';
+        break;
+      case 'New Playing':
+        url =
+            'https://api.themoviedb.org/3/movie/now_playing?api_key=$kApiKey&language=en-US&page=$pageNumber';
+        break;
+      default:
+        url =
+            'https://api.themoviedb.org/3/movie/popular?api_key=$kApiKey&language=en-US&page=$pageNumber';
+    }
+    Dio().get(url!).then((value) {
+      movieModel = MovieModel.fromJson(value.data);
+      print(movieModel!.results!.length);
+      emit(GetCategorySuccessState());
+    }).catchError((onError) {
+      emit(GetCategoryErrorState(onError.toString()));
+    });
+  }
+
+// void getHomeData() {
+//   emit(GetCategoryLoadingState());
+//   DioHelper.getDate(
+//     url: Home,
+//   ).then((value) {
+//     homeModel = HomeModel.fromJson(value.data);
+//     //print(homeModel!.status.toString());
+//     homeModel!.data!.products!.forEach((element) {
+//       favorites.addAll({element.id: element.inFavorites});
+//       //print(favorites);
+//     });
+//     print('good');
+//     emit(HomeSuccessState());
+//   }).catchError((onError) {
+//     emit(HomeErrorState(onError.toString()));
+//     print(onError.toString());
+//   });
+// }
 }

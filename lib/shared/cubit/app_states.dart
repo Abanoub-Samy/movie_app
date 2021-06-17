@@ -6,15 +6,12 @@ class AppChangeMode extends AppStates {}
 
 class ChangeBottomNavState extends AppStates {}
 
-class LoginLoadingState extends AppStates {}
+class GetCategoryLoadingState extends AppStates {}
 
-class LoginSuccessState extends AppStates {}
+class GetCategorySuccessState extends AppStates {}
 
-class LoginErrorState extends AppStates {
+class GetCategoryErrorState extends AppStates {
   final String error;
 
-  LoginErrorState(this.error);
+  GetCategoryErrorState(this.error);
 }
-
-class RegisterState extends AppStates {}
-
