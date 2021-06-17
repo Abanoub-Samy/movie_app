@@ -164,7 +164,10 @@ class AppCubit extends Cubit<AppStates> {
     'New Playing',
   ];
   String? selectedCategory;
-
+  void changeCategory(String category) {
+    selectedCategory = category;
+    emit(ChangeCategoryState());
+  }
   MovieModel? movieModel;
   int? pageNumber;
   String? url;

@@ -5,7 +5,7 @@ class InitialState extends AppStates {}
 class AppChangeMode extends AppStates {}
 
 class ChangeBottomNavState extends AppStates {}
-
+class ChangeCategoryState extends AppStates{}
 class GetCategoryLoadingState extends AppStates {}
 
 class GetCategorySuccessState extends AppStates {}
