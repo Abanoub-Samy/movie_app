@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:movie_app/screens/on_boarding/on_boarding_screen.dart';
 
 class OnBoardingItem extends StatelessWidget {
-  final BoardingModel list ;
+  final BoardingModel list;
 
-  OnBoardingItem({ required this.list});
+  OnBoardingItem({required this.list});
 
   @override
   Widget build(BuildContext context) {
@@ -16,14 +16,14 @@ class OnBoardingItem extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: 30,
+          height: 10,
         ),
         Text(
           list.title,
           style: Theme.of(context).textTheme.headline5,
         ),
         SizedBox(
-          height: 30,
+          height: 10,
         ),
         Text(
           list.body,

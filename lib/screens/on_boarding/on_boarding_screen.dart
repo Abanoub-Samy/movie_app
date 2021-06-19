@@ -43,13 +43,13 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
           },
           icon: AppCubit.get(context).isDark
               ? Icon(
-            Icons.brightness_4_outlined,
-            color: Colors.black,
-          )
+                  Icons.brightness_4_outlined,
+                  color: Colors.black,
+                )
               : Icon(
-            Icons.brightness_4_outlined,
-            color: Colors.white,
-          ),
+                  Icons.brightness_4_outlined,
+                  color: Colors.white,
+                ),
         ),
         actions: [
           TextButton(
@@ -72,85 +72,78 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
               ))
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: PageView.builder(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: PageView.builder(
+              controller: boardController,
+              physics: BouncingScrollPhysics(),
+              itemBuilder: (ctx, index) => OnBoardingItem(
+                list: boarding[index],
+              ),
+              itemCount: boarding.length,
+              onPageChanged: (index) {
+                if (index == boarding.length - 1) {
+                  setState(() {
+                    isLast = true;
+                  });
+                } else {
+                  setState(() {
+                    isLast = false;
+                  });
+                }
+              },
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              SmoothPageIndicator(
                 controller: boardController,
-                physics: BouncingScrollPhysics(),
-                itemBuilder: (ctx, index) => OnBoardingItem(
-                  list: boarding[index],
+                count: boarding.length,
+                effect: ExpandingDotsEffect(
+                  dotColor: Theme.of(context).accentColor,
+                  activeDotColor: Theme.of(context).primaryColor,
+                  dotHeight: 10,
+                  expansionFactor: 4,
+                  dotWidth: 10,
+                  spacing: 5,
                 ),
-                itemCount: boarding.length,
-                onPageChanged: (index) {
-                  if (index == boarding.length - 1) {
-                    setState(() {
-                      isLast = true;
-                    });
-                  } else {
-                    setState(() {
-                      isLast = false;
+              ),
+              FloatingActionButton(
+                backgroundColor: Theme.of(context).primaryColor,
+                onPressed: () {
+                  if (isLast) {
+                    CacheHelper.saveData(key: 'onBoarding', value: true)
+                        .then((value) {
+                      if (value) {
+                        Navigator.pushReplacementNamed(
+                            context, HomeScreen.routeName);
+                      }
                     });
                   }
+                  boardController.nextPage(
+                    duration: Duration(
+                      milliseconds: 750,
+                    ),
+                    curve: Curves.fastLinearToSlowEaseIn,
+                  );
                 },
+                child: Icon(
+                  Icons.arrow_forward,
+                  color: Colors.white,
+                ),
               ),
-            ),
-            SizedBox(
-              height: 40,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                SmoothPageIndicator(
-                  controller: boardController,
-                  count: boarding.length,
-                  effect: ExpandingDotsEffect(
-                    dotColor: Theme.of(context).accentColor,
-                    activeDotColor: Theme.of(context).primaryColor,
-                    dotHeight: 10,
-                    expansionFactor: 4,
-                    dotWidth: 10,
-                    spacing: 5,
-                  ),
-                ),
-                Text(
-                  'Indicator',
-                  style: Theme.of(context).textTheme.subtitle1,
-                ),
-                FloatingActionButton(
-                  backgroundColor: Theme.of(context).primaryColor,
-                  onPressed: () {
-                    if (isLast) {
-                      CacheHelper.saveData(key: 'onBoarding', value: true)
-                          .then((value) {
-                        if (value) {
-                          Navigator.pushReplacementNamed(
-                              context, HomeScreen.routeName);
-                        }
-                      });
-                    }
-                    boardController.nextPage(
-                      duration: Duration(
-                        milliseconds: 750,
-                      ),
-                      curve: Curves.fastLinearToSlowEaseIn,
-                    );
-                  },
-                  child: Icon(
-                    Icons.arrow_forward,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 20,
-            ),
-          ],
-        ),
+            ],
+          ),
+          SizedBox(
+            height: 20,
+          ),
+        ],
       ),
     );
   }

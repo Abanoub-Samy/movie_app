@@ -2,18 +2,21 @@
 import 'package:conditional_builder/conditional_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movie_app/models/movie_model.dart';
 import 'package:movie_app/screens/movies/movie_card.dart';
 import 'package:movie_app/shared/cubit/app_cubit.dart';
 import 'package:movie_app/shared/cubit/app_states.dart';
-import 'package:movie_app/shared/global/end_points.dart';
 
 class MoviesGrid extends StatelessWidget {
+  final MovieModel? model;
+
+  const MoviesGrid({Key? key, required this.model}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AppCubit, AppStates>(
       listener: (context, state) {},
       builder: (context, state) {
-        var cubit = AppCubit.get(context);
         return ConditionalBuilder(
             condition: true,
             fallback: (context) => Center(
@@ -31,12 +34,8 @@ class MoviesGrid extends StatelessWidget {
                   primary: false,
                   itemBuilder: (context, index) {
                     return MovieCard(
-                        image: (cubit.movieModel!.results![index].posterPath !=
-                                null)
-                            ? NetworkImage(kCroppedPosterBaseURL +
-                                cubit.movieModel!.results![index].posterPath
-                                    .toString()) as ImageProvider
-                            : AssetImage('images/placeholder.png'));
+                      model: model!.results![index],
+                    );
                   },
                 ));
       },

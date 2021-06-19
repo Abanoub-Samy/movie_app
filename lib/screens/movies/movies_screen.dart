@@ -35,7 +35,7 @@ class MoviesScreen extends StatelessWidget {
                           minHeight: 5,
                         ),
                       ),
-                      builder: (context) => MoviesGrid(),
+                      builder: (context) => MoviesGrid(model:model,),
                     ),
                   ],
                 ),
