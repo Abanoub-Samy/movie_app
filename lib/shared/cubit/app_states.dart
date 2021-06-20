@@ -15,3 +15,13 @@ class GetCategoryErrorState extends AppStates {
 
   GetCategoryErrorState(this.error);
 }
+
+class SearchMoviesLoadingState extends AppStates {}
+
+class SearchMoviesSuccessState extends AppStates {}
+
+class SearchMoviesErrorState extends AppStates {
+  final String error;
+
+  SearchMoviesErrorState(this.error);
+}

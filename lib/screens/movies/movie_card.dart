@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movie_app/models/movie_model.dart';
-import 'package:movie_app/screens/movie_details/details_screen.dart';
+import 'package:movie_app/screens/movies/movie_details/details_screen.dart';
 import 'package:movie_app/shared/global/end_points.dart';
 
 class MovieCard extends StatelessWidget {
@@ -8,14 +8,20 @@ class MovieCard extends StatelessWidget {
 
   const MovieCard({Key? key, required this.model}) : super(key: key);
 
-
   @override
   Widget build(BuildContext context) {
     IconData _likeIcon = Icons.favorite_border;
     Color _likeIconColor = kSecondLightColor;
     return InkWell(
       onTap: () {
-        Navigator.pushNamed(context, DetailsScreen.routeName,arguments: model);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => DetailsScreen(
+                    type: 'movie-details',
+                    data: model,
+                  )),
+        );
       },
       child: Container(
         alignment: Alignment.topRight,
@@ -40,8 +46,8 @@ class MovieCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(7.0),
           image: DecorationImage(
             image: (model.posterPath != null)
-                ? NetworkImage(kCroppedPosterBaseURL +
-                        model.posterPath.toString())
+                ? NetworkImage(
+                        kCroppedPosterBaseURL + model.posterPath.toString())
                     as ImageProvider
                 : AssetImage('images/placeholder.png'),
             fit: BoxFit.fill,

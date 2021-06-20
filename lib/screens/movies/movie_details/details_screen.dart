@@ -1,17 +1,26 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:movie_app/models/movie_model.dart';
-import 'package:movie_app/screens/movie_details/details.dart';
-import 'package:movie_app/screens/movie_details/movie_poster.dart';
+import 'package:movie_app/models/movie_model.dart' as mo;
+import 'package:movie_app/models/search_model.dart' as se;
+import 'package:movie_app/screens/movies/movie_details/details.dart';
+import 'package:movie_app/screens/movies/movie_details/movie_poster.dart';
 import 'package:movie_app/shared/global/end_points.dart';
 import 'package:movie_app/shared/global/responsive.dart';
 
 class DetailsScreen extends StatelessWidget {
-  static String routeName = '/details-screen';
+  //static String routeName = '/details-screen';
+  final String type;
+  final dynamic data ;
 
+  const DetailsScreen({required this.type,required this.data});
   @override
   Widget build(BuildContext context) {
-    final model = ModalRoute.of(context)!.settings.arguments as Results;
+    var model ;
+    if(type =='movie-details') {
+      model = data as mo.Results;
+    }else if(type =='search-movie') {
+      model = data as se.SearchResults;
+    }
     return Scaffold(
       backgroundColor: Colors.black87,
       appBar: AppBar(

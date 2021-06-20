@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:movie_app/models/movie_model.dart';
 import 'package:movie_app/shared/global/end_points.dart';
 import 'package:movie_app/shared/global/responsive.dart';
 
 class MoviePoster extends StatelessWidget {
-  final Results model;
+  final dynamic model;
 
   MoviePoster({required this.model});
 
@@ -20,7 +19,7 @@ class MoviePoster extends StatelessWidget {
             borderRadius: BorderRadius.only(bottomLeft: Radius.circular(40)),
             child: Image(
               image: NetworkImage(
-                kCroppedPosterBaseURL + model.posterPath.toString(),
+                kOriginalPosterBaseURL + model.posterPath.toString(),
               ),
               fit: BoxFit.fill,
             ),

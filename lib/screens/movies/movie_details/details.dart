@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:movie_app/models/movie_model.dart';
 import 'package:movie_app/shared/global/end_points.dart';
 import 'package:movie_app/shared/global/responsive.dart';
 
 class Details extends StatelessWidget {
-  final Results model;
+  final dynamic model;
 
   Details({required this.model});
 

@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie_app/models/movie_model.dart';
+import 'package:movie_app/models/search_model.dart';
 import 'package:movie_app/screens/favorites/favorites_screen.dart';
 import 'package:movie_app/screens/movies/movies_screen.dart';
 import 'package:movie_app/screens/search/search_screen.dart';
@@ -200,22 +201,16 @@ class AppCubit extends Cubit<AppStates> {
     });
   }
 
-// void getHomeData() {
-//   emit(GetCategoryLoadingState());
-//   DioHelper.getDate(
-//     url: Home,
-//   ).then((value) {
-//     homeModel = HomeModel.fromJson(value.data);
-//     //print(homeModel!.status.toString());
-//     homeModel!.data!.products!.forEach((element) {
-//       favorites.addAll({element.id: element.inFavorites});
-//       //print(favorites);
-//     });
-//     print('good');
-//     emit(HomeSuccessState());
-//   }).catchError((onError) {
-//     emit(HomeErrorState(onError.toString()));
-//     print(onError.toString());
-//   });
-// }
+  SearchModel? searchModel ;
+  void searchMovies({required String search}) {
+    emit(SearchMoviesLoadingState());
+    Dio().get('https://api.themoviedb.org/3/search/movie?api_key=$kApiKey&query=$search&page=1'
+    ).then((value) {
+      searchModel = SearchModel.fromJson(value.data);
+      emit(SearchMoviesSuccessState());
+    }).catchError((onError) {
+      emit(SearchMoviesErrorState(onError.toString()));
+    });
+  }
+
 }
