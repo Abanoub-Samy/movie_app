@@ -1,14 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:movie_app/models/movie_model.dart' as mo;
-import 'package:movie_app/models/search_model.dart' as se;
+import 'package:movie_app/models/movie_model.dart' as movie;
+import 'package:movie_app/models/search_model.dart' as search;
+import 'package:movie_app/models/tv_model.dart' as tv;
 import 'package:movie_app/screens/movies/movie_details/details.dart';
 import 'package:movie_app/screens/movies/movie_details/movie_poster.dart';
 import 'package:movie_app/shared/global/end_points.dart';
 import 'package:movie_app/shared/global/responsive.dart';
 
 class DetailsScreen extends StatelessWidget {
-  //static String routeName = '/details-screen';
   final String type;
   final dynamic data ;
 
@@ -16,10 +16,15 @@ class DetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var model ;
+    bool? isMovie;
     if(type =='movie-details') {
-      model = data as mo.Results;
+      model = data as movie.Results;
+      isMovie = true;
     }else if(type =='search-movie') {
-      model = data as se.SearchResults;
+      model = data as search.SearchResults;
+    }else if(type=='tv-details'){
+      model = model = data as tv.TvResults;
+      isMovie = false;
     }
     return Scaffold(
       backgroundColor: Colors.black87,
@@ -36,7 +41,7 @@ class DetailsScreen extends StatelessWidget {
               SizedBox(
                 height: Responsive().height(2, context),
               ),
-              Details(model: model),
+              Details(model: model,isMovie: isMovie,),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Container(

@@ -1,15 +1,14 @@
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:conditional_builder/conditional_builder.dart';
-import 'package:dots_indicator/dots_indicator.dart';
-import 'package:flutter/material.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:movie_app/models/movie_model.dart';
+import 'package:dots_indicator/dots_indicator.dart';
+import 'package:flutter/material.dart';
 import 'package:movie_app/shared/global/end_points.dart';
 import 'package:movie_app/shared/global/responsive.dart';
 
 class CustomSwiper extends StatefulWidget {
-  final MovieModel? movieModel;
+  final dynamic movieModel;
 
   const CustomSwiper({required this.movieModel});
 

@@ -4,8 +4,9 @@ import 'package:movie_app/shared/global/responsive.dart';
 
 class Details extends StatelessWidget {
   final dynamic model;
+  final bool? isMovie;
 
-  Details({required this.model});
+  Details({required this.model, required this.isMovie});
 
   @override
   Widget build(BuildContext context) {
@@ -42,20 +43,36 @@ class Details extends StatelessWidget {
               ),
             ],
           ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text(
-                'Publish Date : ${model.releaseDate}',
-                style: TextStyle(
-                  fontSize: Responsive().height(3, context),
-                  color: Colors.grey,
-                  fontWeight: FontWeight.bold,
+          if (isMovie == true)
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  'Publish Date : ${model.releaseDate}',
+                  style: TextStyle(
+                    fontSize: Responsive().height(3, context),
+                    color: Colors.grey,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
+          if (isMovie == false)
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  'Publish Date : ${model.firstAirDate}',
+                  style: TextStyle(
+                    fontSize: Responsive().height(3, context),
+                    color: Colors.grey,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
           SizedBox(
             height: Responsive().height(1, context),
           ),

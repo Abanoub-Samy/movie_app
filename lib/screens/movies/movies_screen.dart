@@ -3,7 +3,7 @@ import 'package:conditional_builder/conditional_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie_app/models/movie_model.dart';
-import 'package:movie_app/screens/movies/category_selector.dart';
+import 'package:movie_app/widgets/category_selector.dart';
 import 'package:movie_app/screens/movies/movie_grid.dart';
 import 'package:movie_app/screens/movies/page_header.dart';
 import 'package:movie_app/shared/cubit/app_cubit.dart';

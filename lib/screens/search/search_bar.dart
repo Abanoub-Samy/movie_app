@@ -42,8 +42,11 @@ class SearchBar extends StatelessWidget {
               child: MaterialButton(
                   onPressed: () {
                     if(text.text.isNotEmpty){
-                      AppCubit.get(context).searchMovies(search: text.text);
-                      print(AppCubit.get(context).searchModel!.results![0].overview);
+                      if(isMovie){
+                        AppCubit.get(context).searchMovies(search: text.text);
+                      }else{
+                        AppCubit.get(context).searchTvShows(search: text.text);
+                      }
                     }
                   },
                   child: Icon(

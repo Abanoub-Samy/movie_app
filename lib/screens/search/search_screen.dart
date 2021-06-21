@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movie_app/screens/search/search_movie.dart';
+import 'package:movie_app/screens/search/tv_search/search_tv.dart';
 import 'package:movie_app/shared/global/end_points.dart';
 
 class SearchScreen extends StatelessWidget {
@@ -33,7 +34,7 @@ class SearchScreen extends StatelessWidget {
         body: TabBarView(
           children: [
             SearchMovie(),
-            Icon(Icons.directions_transit),
+            SearchTvShows(),
           ],
         ),
       ),

@@ -23,8 +23,6 @@ class ResultsOfSearch extends StatelessWidget {
                 physics: BouncingScrollPhysics(),
                 itemBuilder: (context, index) => InkWell(
                   onTap: () {
-                    // Navigator.pushNamed(context, DetailsScreen.routeName,
-                    //     arguments: searchModel!.results![index]);
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => DetailsScreen(type: 'search-movie',data: searchModel!.results![index],)),

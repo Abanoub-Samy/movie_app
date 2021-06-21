@@ -25,3 +25,13 @@ class SearchMoviesErrorState extends AppStates {
 
   SearchMoviesErrorState(this.error);
 }
+
+class SearchTvLoadingState extends AppStates {}
+
+class SearchTvSuccessState extends AppStates {}
+
+class SearchTvErrorState extends AppStates {
+  final String error;
+
+  SearchTvErrorState(this.error);
+}

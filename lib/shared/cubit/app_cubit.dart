@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie_app/models/movie_model.dart';
 import 'package:movie_app/models/search_model.dart';
+import 'package:movie_app/models/search_tv.dart';
+import 'package:movie_app/models/tv_model.dart';
 import 'package:movie_app/screens/favorites/favorites_screen.dart';
 import 'package:movie_app/screens/movies/movies_screen.dart';
 import 'package:movie_app/screens/search/search_screen.dart';
@@ -17,7 +19,8 @@ class AppCubit extends Cubit<AppStates> {
 
   static AppCubit get(context) => BlocProvider.of(context);
   bool isDark = false;
-
+  int? pageNumber;
+  String? url;
   int currentIndex = 0;
   List<Widget> screens = [
     MoviesScreen(),
@@ -41,123 +44,6 @@ class AppCubit extends Cubit<AppStates> {
     });
   }
 
-  // HomeModel? homeModel;
-  // Map<int?, bool> favorites = {};
-  //
-  // void getHomeData() {
-  //   emit(HomeLoadingState());
-  //   DioHelper.getDate(
-  //     url: Home,
-  //     token: Token,
-  //   ).then((value) {
-  //     homeModel = HomeModel.fromJson(value.data);
-  //     //print(homeModel!.status.toString());
-  //     homeModel!.data!.products!.forEach((element) {
-  //       favorites.addAll({element.id: element.inFavorites});
-  //       //print(favorites);
-  //     });
-  //     print('good');
-  //     emit(HomeSuccessState());
-  //   }).catchError((onError) {
-  //     emit(HomeErrorState(onError.toString()));
-  //     print(onError.toString());
-  //   });
-  // }
-  //
-  // CategoriesModel? categoriesModel;
-  //
-  // void getCategoriesData() {
-  //   emit(CategoriesLoadingState());
-  //   DioHelper.getDate(
-  //     url: Categories,
-  //     token: Token,
-  //   ).then((value) {
-  //     categoriesModel = CategoriesModel.fromJson(value.data);
-  //     //print(categoriesModel!.status.toString());
-  //     emit(CategoriesSuccessState());
-  //   }).catchError((onError) {
-  //     emit(CategoriesErrorState(onError.toString()));
-  //     print(onError.toString());
-  //   });
-  // }
-  //
-  // ChangeFavoritesModel? changeFavoritesModel;
-  //
-  // void changeFavorites(int? productId) {
-  //   if (favorites[productId] == true) {
-  //     favorites[productId] = false;
-  //     //getFavoritesData();
-  //   } else {
-  //     favorites[productId] = true;
-  //     getFavoritesData();
-  //   }
-  //   emit(FavoritesChange());
-  //   DioHelper.postDate(
-  //       url: Favorites,
-  //       data: {
-  //         'product_id': productId,
-  //       },
-  //       token: Token)
-  //       .then((value) {
-  //     changeFavoritesModel = ChangeFavoritesModel.fromJson(value.data);
-  //     emit(FavoritesSuccessState(changeFavoritesModel!));
-  //     if (changeFavoritesModel!.status == false) {
-  //       if (favorites[productId] == true) {
-  //         favorites[productId] = false;
-  //       } else {
-  //         favorites[productId] = true;
-  //       }
-  //     }
-  //     emit(FavoritesChangeState());
-  //   }).catchError((onError) {
-  //     if (favorites[productId] == true) {
-  //       favorites[productId] = false;
-  //     } else {
-  //       favorites[productId] = true;
-  //     }
-  //     emit(FavoritesErrorState(onError.toString()));
-  //     print(onError.toString());
-  //   });
-  // }
-  //
-  // FavoritesModel? favoritesModel;
-  //
-  // void getFavoritesData() {
-  //   emit(GetFavoritesLoadingState());
-  //   DioHelper.getDate(
-  //     url: Favorites,
-  //     token: Token,
-  //   ).then((value) {
-  //     favoritesModel = FavoritesModel.fromJson(value.data);
-  //     emit(GetFavoritesSuccessState());
-  //   }).catchError((onError) {
-  //     emit(GetFavoritesErrorState(onError.toString()));
-  //     print(onError.toString());
-  //   });
-  // }
-  //
-  //
-  // SearchModel? searchModel;
-  //
-  // void searchProduct({
-  //   required String text,
-  // }) {
-  //   emit(SearchLoadingState());
-  //   DioHelper.postDate(
-  //     url: Search,
-  //     token: Token,
-  //     data: {
-  //       'text': text,
-  //     },
-  //   ).then((value) {
-  //     searchModel = SearchModel.fromJson(value.data);
-  //     emit(SearchSuccessState());
-  //   }).catchError((onError) {
-  //     emit(SearchErrorState(onError.toString()));
-  //     print(onError.toString());
-  //   });
-  // }
-
   List<String> categoryList = [
     'Popular',
     'Top Rated',
@@ -169,10 +55,8 @@ class AppCubit extends Cubit<AppStates> {
     selectedCategory = category;
     emit(ChangeCategoryState());
   }
-  MovieModel? movieModel;
-  int? pageNumber;
-  String? url;
 
+  MovieModel? movieModel;
   void getMoviesByCategory() {
     emit(GetCategoryLoadingState());
     switch (selectedCategory) {
@@ -201,6 +85,35 @@ class AppCubit extends Cubit<AppStates> {
     });
   }
 
+  TvModel? tvModel;
+  void getTvShowsByCategory() {
+    emit(GetCategoryLoadingState());
+    switch (selectedCategory) {
+      case 'Top Rated':
+        url =
+        'https://api.themoviedb.org/3/tv/top_rated?api_key=$kApiKey&language=en-US&page=$pageNumber';
+        break;
+      case 'Upcoming':
+        url =
+        'https://api.themoviedb.org/3/tv/airing_today?api_key=$kApiKey&language=en-US&page=$pageNumber';
+        break;
+      case 'New Playing':
+        url =
+        'https://api.themoviedb.org/3/tv/on_the_air?api_key=$kApiKey&language=en-US&page=$pageNumber';
+        break;
+      default:
+        url =
+        'https://api.themoviedb.org/3/tv/popular?api_key=$kApiKey&language=en-US&page=$pageNumber';
+    }
+    Dio().get(url!).then((value) {
+      tvModel = TvModel.fromJson(value.data);
+      print(tvModel!.results!.length);
+      emit(GetCategorySuccessState());
+    }).catchError((onError) {
+      emit(GetCategoryErrorState(onError.toString()));
+    });
+  }
+
   SearchModel? searchModel ;
   void searchMovies({required String search}) {
     emit(SearchMoviesLoadingState());
@@ -210,6 +123,18 @@ class AppCubit extends Cubit<AppStates> {
       emit(SearchMoviesSuccessState());
     }).catchError((onError) {
       emit(SearchMoviesErrorState(onError.toString()));
+    });
+  }
+
+  var searchTvModel = null;
+  void searchTvShows({required String search}) {
+    emit(SearchTvLoadingState());
+    Dio().get('https://api.themoviedb.org/3/search/tv?api_key=$kApiKey&page=1&query=$search'
+    ).then((value) {
+      searchTvModel = SearchTvModel.fromJson(value.data);
+      emit(SearchTvSuccessState());
+    }).catchError((onError) {
+      emit(SearchTvErrorState(onError.toString()));
     });
   }
 
