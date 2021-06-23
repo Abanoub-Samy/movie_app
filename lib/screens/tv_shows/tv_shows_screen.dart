@@ -3,6 +3,7 @@ import 'package:conditional_builder/conditional_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie_app/models/tv_model.dart';
+import 'package:movie_app/shared/global/responsive.dart';
 import 'package:movie_app/widgets/category_selector.dart';
 import 'package:movie_app/screens/tv_shows/tv_movie_grid.dart';
 import 'package:movie_app/screens/tv_shows/tv_page_header.dart';
@@ -13,6 +14,9 @@ import 'package:movie_app/widgets/custom_swiper.dart';
 class TvShowsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    AppCubit.get(context).selectedCategory =
+    AppCubit.get(context).categoryList[0];
+    AppCubit.get(context).pageNumber = 1;
     AppCubit.get(context).getTvShowsByCategory();
     return BlocConsumer<AppCubit, AppStates>(
       listener: (context, state) {},
@@ -39,6 +43,29 @@ class TvShowsScreen extends StatelessWidget {
                         model: model,
                       ),
                     ),
+                    SizedBox(
+                      height: Responsive().height(1, context),
+                    ),
+                    Container(
+                      width: double.infinity,
+                      height: Responsive().height(4, context),
+                      child: Expanded(
+                        child: TextButton(
+                            onPressed: () {
+                              AppCubit.get(context)
+                                  .changePageNumberTv(model!.page! + 1);
+                            },
+                            child: Text(
+                              'Load More...',
+                              style: TextStyle(
+                                color: Colors.green,
+                              ),
+                            )),
+                      ),
+                    ),
+                    SizedBox(
+                      height: Responsive().height(8, context),
+                    ),
                   ],
                 ),
               ),
@@ -63,7 +90,7 @@ class TvShowsScreen extends StatelessWidget {
             categoryList: AppCubit.get(context).categoryList,
             onClick: (selectedCategory) {
               AppCubit.get(context).changeCategory(selectedCategory);
-              AppCubit.get(context).getMoviesByCategory();
+              AppCubit.get(context).getTvShowsByCategory();
             },
           ),
         ],

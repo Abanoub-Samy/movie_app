@@ -3,6 +3,7 @@ import 'package:conditional_builder/conditional_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie_app/models/movie_model.dart';
+import 'package:movie_app/shared/global/responsive.dart';
 import 'package:movie_app/widgets/category_selector.dart';
 import 'package:movie_app/screens/movies/movie_grid.dart';
 import 'package:movie_app/screens/movies/page_header.dart';
@@ -13,6 +14,9 @@ import 'package:movie_app/widgets/custom_swiper.dart';
 class MoviesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    AppCubit.get(context).selectedCategory =
+        AppCubit.get(context).categoryList[0];
+    AppCubit.get(context).pageNumber = 1;
     AppCubit.get(context).getMoviesByCategory();
     return BlocConsumer<AppCubit, AppStates>(
       listener: (context, state) {},
@@ -23,6 +27,7 @@ class MoviesScreen extends StatelessWidget {
             height: double.infinity,
             color: Colors.black87,
             child: SingleChildScrollView(
+              physics: BouncingScrollPhysics(),
               child: Center(
                 child: Column(
                   children: [
@@ -35,7 +40,32 @@ class MoviesScreen extends StatelessWidget {
                           minHeight: 5,
                         ),
                       ),
-                      builder: (context) => MoviesGrid(model:model,),
+                      builder: (context) => MoviesGrid(
+                        model: model,
+                      ),
+                    ),
+                    SizedBox(
+                      height: Responsive().height(1, context),
+                    ),
+                    Container(
+                      width: double.infinity,
+                      height: Responsive().height(4, context),
+                      child: Expanded(
+                        child: TextButton(
+                            onPressed: () {
+                              AppCubit.get(context)
+                                  .changePageNumberMovie(model!.page! + 1);
+                            },
+                            child: Text(
+                              'Load More...',
+                              style: TextStyle(
+                                color: Colors.green,
+                              ),
+                            )),
+                      ),
+                    ),
+                    SizedBox(
+                      height: Responsive().height(8, context),
                     ),
                   ],
                 ),

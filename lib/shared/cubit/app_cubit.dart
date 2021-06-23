@@ -1,7 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:movie_app/models/movie_model.dart';
 import 'package:movie_app/models/search_model.dart';
 import 'package:movie_app/models/search_tv.dart';
@@ -22,16 +24,57 @@ class AppCubit extends Cubit<AppStates> {
   int? pageNumber;
   String? url;
   int currentIndex = 0;
+  String? selectedCategory;
+
   List<Widget> screens = [
     MoviesScreen(),
     TvShowsScreen(),
     FavoritesScreen(),
     SearchScreen(),
   ];
+  List<String> categoryList = [
+    'Popular',
+    'Top Rated',
+    'Upcoming',
+    'New Playing',
+  ];
 
   void changeBottom(int index) {
     currentIndex = index;
     emit(ChangeBottomNavState());
+  }
+  void changePageNumberMovie(int index) {
+    if(index<= movieModel!.totalPages!.toInt()){
+      pageNumber = index;
+      getMoviesByCategory();
+    }else{
+      Fluttertoast.showToast(
+          msg: "This is the last page!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
+    }
+
+  }
+  void changePageNumberTv(int index) {
+    if(index<= movieModel!.totalPages!.toInt()){
+      pageNumber = index;
+      getTvShowsByCategory();
+    }else{
+      Fluttertoast.showToast(
+          msg: "This is the last page!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
+    }
   }
 
   void changeAppMode({bool? fromShared}) {
@@ -44,13 +87,7 @@ class AppCubit extends Cubit<AppStates> {
     });
   }
 
-  List<String> categoryList = [
-    'Popular',
-    'Top Rated',
-    'Upcoming',
-    'New Playing',
-  ];
-  String? selectedCategory;
+
   void changeCategory(String category) {
     selectedCategory = category;
     emit(ChangeCategoryState());
@@ -126,7 +163,7 @@ class AppCubit extends Cubit<AppStates> {
     });
   }
 
-  var searchTvModel = null;
+  var searchTvModel;
   void searchTvShows({required String search}) {
     emit(SearchTvLoadingState());
     Dio().get('https://api.themoviedb.org/3/search/tv?api_key=$kApiKey&page=1&query=$search'
