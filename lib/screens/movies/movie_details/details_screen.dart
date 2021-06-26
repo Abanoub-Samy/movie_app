@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_app/models/movie_model.dart' as movie;
-import 'package:movie_app/models/search_model.dart' as search;
+import 'package:movie_app/models/search_model.dart' as searchMovie;
 import 'package:movie_app/models/tv_model.dart' as tv;
+import 'package:movie_app/models/search_tv.dart' as searchTv;
 import 'package:movie_app/screens/movies/movie_details/details.dart';
 import 'package:movie_app/screens/movies/movie_details/movie_poster.dart';
 import 'package:movie_app/shared/global/end_points.dart';
@@ -10,20 +11,24 @@ import 'package:movie_app/shared/global/responsive.dart';
 
 class DetailsScreen extends StatelessWidget {
   final String type;
-  final dynamic data ;
+  final dynamic data;
 
-  const DetailsScreen({required this.type,required this.data});
+  const DetailsScreen({required this.type, required this.data});
+
   @override
   Widget build(BuildContext context) {
-    var model ;
+    var model;
     bool? isMovie;
-    if(type =='movie-details') {
+    if (type == 'movie-details') {
       model = data as movie.Results;
       isMovie = true;
-    }else if(type =='search-movie') {
-      model = data as search.SearchResults;
-    }else if(type=='tv-details'){
+    } else if (type == 'search-movie') {
+      model = data as searchMovie.SearchResults;
+    } else if (type == 'tv-details') {
       model = model = data as tv.TvResults;
+      isMovie = false;
+    } else if (type == 'search-tv') {
+      model = model = data as searchTv.Results;
       isMovie = false;
     }
     return Scaffold(
@@ -41,7 +46,10 @@ class DetailsScreen extends StatelessWidget {
               SizedBox(
                 height: Responsive().height(2, context),
               ),
-              Details(model: model,isMovie: isMovie,),
+              Details(
+                model: model,
+                isMovie: isMovie,
+              ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Container(

@@ -14,9 +14,6 @@ import 'package:movie_app/widgets/custom_swiper.dart';
 class MoviesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    AppCubit.get(context).selectedCategory =
-        AppCubit.get(context).categoryList[0];
-    AppCubit.get(context).pageNumber = 1;
     AppCubit.get(context).getMoviesByCategory();
     return BlocConsumer<AppCubit, AppStates>(
       listener: (context, state) {},
@@ -28,47 +25,43 @@ class MoviesScreen extends StatelessWidget {
             color: Colors.black87,
             child: SingleChildScrollView(
               physics: BouncingScrollPhysics(),
-              child: Center(
-                child: Column(
-                  children: [
-                    buildHeaderSliverList(context, model),
-                    ConditionalBuilder(
-                      condition: state is GetCategorySuccessState,
-                      fallback: (context) => Center(
-                        child: LinearProgressIndicator(
-                          color: Colors.green,
-                          minHeight: 5,
-                        ),
-                      ),
-                      builder: (context) => MoviesGrid(
-                        model: model,
+              child: Column(
+                children: [
+                  buildHeaderSliverList(context, model),
+                  ConditionalBuilder(
+                    condition: state is GetCategorySuccessState,
+                    fallback: (context) => Center(
+                      child: LinearProgressIndicator(
+                        color: Colors.green,
+                        minHeight: 5,
                       ),
                     ),
-                    SizedBox(
-                      height: Responsive().height(1, context),
+                    builder: (context) => MoviesGrid(
+                      model: model,
                     ),
-                    Container(
-                      width: double.infinity,
-                      height: Responsive().height(4, context),
-                      child: Expanded(
-                        child: TextButton(
-                            onPressed: () {
-                              AppCubit.get(context)
-                                  .changePageNumberMovie(model!.page! + 1);
-                            },
-                            child: Text(
-                              'Load More...',
-                              style: TextStyle(
-                                color: Colors.green,
-                              ),
-                            )),
-                      ),
-                    ),
-                    SizedBox(
-                      height: Responsive().height(8, context),
-                    ),
-                  ],
-                ),
+                  ),
+                  SizedBox(
+                    height: Responsive().height(1, context),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    height: Responsive().height(4, context),
+                    child: TextButton(
+                        onPressed: () {
+                          AppCubit.get(context)
+                              .changePageNumberMovie(model!.page! + 1);
+                        },
+                        child: Text(
+                          'Load More...',
+                          style: TextStyle(
+                            color: Colors.green,
+                          ),
+                        )),
+                  ),
+                  SizedBox(
+                    height: Responsive().height(8, context),
+                  ),
+                ],
               ),
             ),
           ),
@@ -86,6 +79,9 @@ class MoviesScreen extends StatelessWidget {
           PageHeader(),
           CustomSwiper(
             movieModel: model,
+          ),
+          SizedBox(
+            height: Responsive().height(1, context),
           ),
           CategorySelector(
             categoryList: AppCubit.get(context).categoryList,

@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:movie_app/models/movie_model.dart';
 import 'package:movie_app/models/search_model.dart';
 import 'package:movie_app/models/search_tv.dart';
+import 'package:movie_app/models/token_model.dart';
 import 'package:movie_app/models/tv_model.dart';
 import 'package:movie_app/screens/favorites/favorites_screen.dart';
 import 'package:movie_app/screens/movies/movies_screen.dart';
@@ -41,13 +42,16 @@ class AppCubit extends Cubit<AppStates> {
 
   void changeBottom(int index) {
     currentIndex = index;
+    selectedCategory = categoryList[0];
+    pageNumber = 1;
     emit(ChangeBottomNavState());
   }
+
   void changePageNumberMovie(int index) {
-    if(index<= movieModel!.totalPages!.toInt()){
+    if (index <= movieModel!.totalPages!.toInt()) {
       pageNumber = index;
       getMoviesByCategory();
-    }else{
+    } else {
       Fluttertoast.showToast(
           msg: "This is the last page!",
           toastLength: Toast.LENGTH_SHORT,
@@ -55,16 +59,15 @@ class AppCubit extends Cubit<AppStates> {
           timeInSecForIosWeb: 1,
           backgroundColor: Colors.red,
           textColor: Colors.white,
-          fontSize: 16.0
-      );
+          fontSize: 16.0);
     }
-
   }
+
   void changePageNumberTv(int index) {
-    if(index<= movieModel!.totalPages!.toInt()){
+    if (index <= movieModel!.totalPages!.toInt()) {
       pageNumber = index;
       getTvShowsByCategory();
-    }else{
+    } else {
       Fluttertoast.showToast(
           msg: "This is the last page!",
           toastLength: Toast.LENGTH_SHORT,
@@ -72,8 +75,7 @@ class AppCubit extends Cubit<AppStates> {
           timeInSecForIosWeb: 1,
           backgroundColor: Colors.red,
           textColor: Colors.white,
-          fontSize: 16.0
-      );
+          fontSize: 16.0);
     }
   }
 
@@ -87,13 +89,13 @@ class AppCubit extends Cubit<AppStates> {
     });
   }
 
-
   void changeCategory(String category) {
     selectedCategory = category;
     emit(ChangeCategoryState());
   }
 
   MovieModel? movieModel;
+
   void getMoviesByCategory() {
     emit(GetCategoryLoadingState());
     switch (selectedCategory) {
@@ -123,39 +125,46 @@ class AppCubit extends Cubit<AppStates> {
   }
 
   TvModel? tvModel;
+
   void getTvShowsByCategory() {
-    emit(GetCategoryLoadingState());
+    emit(GetTvCategoryLoadingState());
     switch (selectedCategory) {
       case 'Top Rated':
         url =
-        'https://api.themoviedb.org/3/tv/top_rated?api_key=$kApiKey&language=en-US&page=$pageNumber';
+            'https://api.themoviedb.org/3/tv/top_rated?api_key=$kApiKey&language=en-US&page=$pageNumber';
         break;
       case 'Upcoming':
         url =
-        'https://api.themoviedb.org/3/tv/airing_today?api_key=$kApiKey&language=en-US&page=$pageNumber';
+            'https://api.themoviedb.org/3/tv/airing_today?api_key=$kApiKey&language=en-US&page=$pageNumber';
         break;
       case 'New Playing':
         url =
-        'https://api.themoviedb.org/3/tv/on_the_air?api_key=$kApiKey&language=en-US&page=$pageNumber';
+            'https://api.themoviedb.org/3/tv/on_the_air?api_key=$kApiKey&language=en-US&page=$pageNumber';
         break;
       default:
         url =
-        'https://api.themoviedb.org/3/tv/popular?api_key=$kApiKey&language=en-US&page=$pageNumber';
+            'https://api.themoviedb.org/3/tv/popular?api_key=$kApiKey&language=en-US&page=$pageNumber';
     }
-    Dio().get(url!).then((value) {
+    Dio()
+        .get(url!)
+        .then((value) {
       tvModel = TvModel.fromJson(value.data);
-      print(tvModel!.results!.length);
-      emit(GetCategorySuccessState());
+      print(url);
+      emit(GetTvCategorySuccessState());
     }).catchError((onError) {
-      emit(GetCategoryErrorState(onError.toString()));
+      emit(GetTvCategoryErrorState(onError.toString()));
+      print(onError.toString());
     });
   }
 
-  SearchModel? searchModel ;
+  SearchModel? searchModel;
+
   void searchMovies({required String search}) {
     emit(SearchMoviesLoadingState());
-    Dio().get('https://api.themoviedb.org/3/search/movie?api_key=$kApiKey&query=$search&page=1'
-    ).then((value) {
+    Dio()
+        .get(
+            'https://api.themoviedb.org/3/search/movie?api_key=$kApiKey&query=$search&page=1')
+        .then((value) {
       searchModel = SearchModel.fromJson(value.data);
       emit(SearchMoviesSuccessState());
     }).catchError((onError) {
@@ -164,10 +173,13 @@ class AppCubit extends Cubit<AppStates> {
   }
 
   var searchTvModel;
+
   void searchTvShows({required String search}) {
     emit(SearchTvLoadingState());
-    Dio().get('https://api.themoviedb.org/3/search/tv?api_key=$kApiKey&page=1&query=$search'
-    ).then((value) {
+    Dio()
+        .get(
+            'https://api.themoviedb.org/3/search/tv?api_key=$kApiKey&page=1&query=$search')
+        .then((value) {
       searchTvModel = SearchTvModel.fromJson(value.data);
       emit(SearchTvSuccessState());
     }).catchError((onError) {
@@ -175,4 +187,25 @@ class AppCubit extends Cubit<AppStates> {
     });
   }
 
+  TokenModel? tokenModel;
+
+  void getToken() {
+    emit(GetTokenLoadingState());
+    Dio()
+        .get(
+            'https://api.themoviedb.org/3/authentication/token/new?api_key=$kApiKey')
+        .then((value) {
+      tokenModel = TokenModel.fromJson(value.data);
+      token = tokenModel!.requestToken.toString();
+      emit(GetTokenSuccessState());
+      Dio()
+          .get(
+              'https://www.themoviedb.org/authenticate/$token?redirect_to=http://www.yourapp.com/approved')
+          .then((value) {
+        print('go ahead');
+      });
+    }).catchError((onError) {
+      emit(GetTokenErrorState(onError.toString()));
+    });
+  }
 }

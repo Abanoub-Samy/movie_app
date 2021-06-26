@@ -25,7 +25,11 @@ class ResultsOfSearch extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => DetailsScreen(type: 'search-movie',data: searchModel!.results![index],)),
+                      MaterialPageRoute(
+                          builder: (context) => DetailsScreen(
+                                type: 'search-movie',
+                                data: searchModel!.results![index],
+                              )),
                     );
                   },
                   child: Container(
@@ -37,72 +41,70 @@ class ResultsOfSearch extends StatelessWidget {
                     child: Card(
                       clipBehavior: Clip.antiAliasWithSaveLayer,
                       elevation: 10,
-                      child: Stack(
-                          fit: StackFit.expand,
-                          children: [
-                            Expanded(
-                              child: Image(
-                                image: NetworkImage(kOriginalPosterBaseURL +
-                                    searchModel!.results![index].posterPath
-                                        .toString()),
-                                fit: BoxFit.fill,
-                              ),
-                            ),
-                            Align(
-                              alignment: AlignmentDirectional.bottomCenter,
-                              child: Container(
-                                height: Responsive().height(9, context),
-                                width: double.infinity,
-                                color: Colors.black26.withOpacity(.8),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                      child: Stack(fit: StackFit.expand, children: [
+                        Image(
+                          image: NetworkImage(kOriginalPosterBaseURL +
+                              searchModel!.results![index].posterPath
+                                  .toString()),
+                          fit: BoxFit.fill,
+                        ),
+                        Align(
+                          alignment: AlignmentDirectional.bottomCenter,
+                          child: Container(
+                            height: Responsive().height(9, context),
+                            width: double.infinity,
+                            color: Colors.black26.withOpacity(.8),
+                            child: Padding(
+                              padding: EdgeInsets.all(
+                                  Responsive().height(1, context)),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      searchModel!.results![index].title
+                                          .toString(),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize:
+                                            Responsive().height(3, context),
+                                      ),
+                                    ),
+                                  ),
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
-                                      Flexible(
-                                        child: Text(
-                                          searchModel!.results![index].title
-                                              .toString(),
-                                          maxLines: 8,
-                                          overflow: TextOverflow.clip,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: Responsive().height(4, context),
-                                          ),
+                                      Text(
+                                        '${searchModel!.results![index].voteAverage}',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize:
+                                              Responsive().height(3, context),
                                         ),
                                       ),
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            '${searchModel!.results![index].voteAverage}',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize:
-                                                  Responsive().height(3, context),
-                                            ),
-                                          ),
-                                          Text(
-                                            '/10',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                          Icon(
-                                            Icons.star,
-                                            color: Colors.yellow,
-                                          ),
-                                        ],
+                                      Text(
+                                        '/10',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      Icon(
+                                        Icons.star,
+                                        color: Colors.yellow,
                                       ),
                                     ],
                                   ),
-                                ),
+                                ],
                               ),
                             ),
-                          ]),
+                          ),
+                        ),
+                      ]),
                     ),
                   ),
                 ),

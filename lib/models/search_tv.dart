@@ -32,10 +32,10 @@ class SearchTvModel {
 
 class Results {
   String? posterPath;
-  double? popularity;
+  dynamic popularity;
   int? id;
   String? backdropPath;
-  double? voteAverage;
+  dynamic voteAverage;
   String? overview;
   String? firstAirDate;
   List<String>? originCountry;
@@ -47,18 +47,18 @@ class Results {
 
   Results(
       {this.posterPath,
-        this.popularity,
-        this.id,
-        this.backdropPath,
-        this.voteAverage,
-        this.overview,
-        this.firstAirDate,
-        this.originCountry,
-        this.genreIds,
-        this.originalLanguage,
-        this.voteCount,
-        this.title,
-        this.originalTitle});
+      this.popularity,
+      this.id,
+      this.backdropPath,
+      this.voteAverage,
+      this.overview,
+      this.firstAirDate,
+      this.originCountry,
+      this.genreIds,
+      this.originalLanguage,
+      this.voteCount,
+      this.title,
+      this.originalTitle});
 
   Results.fromJson(Map<String, dynamic> json) {
     posterPath = json['poster_path'];

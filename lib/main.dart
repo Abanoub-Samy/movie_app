@@ -16,7 +16,6 @@ void main() async {
   await CacheHelper.init();
   bool isDark = CacheHelper.getData(key: 'isDark');
   bool onBoarding = CacheHelper.getData(key: 'onBoarding');
-  //Token = CacheHelper.getData(key: 'token');
   Widget? widget;
   if (onBoarding != null) {
     widget = HomeScreen();

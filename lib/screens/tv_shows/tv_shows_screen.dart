@@ -14,9 +14,6 @@ import 'package:movie_app/widgets/custom_swiper.dart';
 class TvShowsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    AppCubit.get(context).selectedCategory =
-    AppCubit.get(context).categoryList[0];
-    AppCubit.get(context).pageNumber = 1;
     AppCubit.get(context).getTvShowsByCategory();
     return BlocConsumer<AppCubit, AppStates>(
       listener: (context, state) {},
@@ -32,7 +29,7 @@ class TvShowsScreen extends StatelessWidget {
                   children: [
                     buildHeaderSliverList(context, model),
                     ConditionalBuilder(
-                      condition: state is GetCategorySuccessState,
+                      condition: state is GetTvCategorySuccessState,
                       fallback: (context) => Center(
                         child: LinearProgressIndicator(
                           color: Colors.green,
@@ -49,19 +46,17 @@ class TvShowsScreen extends StatelessWidget {
                     Container(
                       width: double.infinity,
                       height: Responsive().height(4, context),
-                      child: Expanded(
-                        child: TextButton(
-                            onPressed: () {
-                              AppCubit.get(context)
-                                  .changePageNumberTv(model!.page! + 1);
-                            },
-                            child: Text(
-                              'Load More...',
-                              style: TextStyle(
-                                color: Colors.green,
-                              ),
-                            )),
-                      ),
+                      child: TextButton(
+                          onPressed: () {
+                            AppCubit.get(context)
+                                .changePageNumberTv(model!.page! + 1);
+                          },
+                          child: Text(
+                            'Load More...',
+                            style: TextStyle(
+                              color: Colors.green,
+                            ),
+                          )),
                     ),
                     SizedBox(
                       height: Responsive().height(8, context),

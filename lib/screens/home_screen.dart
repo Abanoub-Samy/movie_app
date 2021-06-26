@@ -11,6 +11,9 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AppCubit.get(context).selectedCategory =
+    AppCubit.get(context).categoryList[0];
+    AppCubit.get(context).pageNumber = 1;
     return BlocConsumer<AppCubit, AppStates>(
       listener: (context, state) {},
       builder: (context, state) {

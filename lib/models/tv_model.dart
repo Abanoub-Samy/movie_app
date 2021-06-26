@@ -22,10 +22,10 @@ class TvModel {
 
 class TvResults {
   String? posterPath;
-  double? popularity;
+  dynamic popularity;
   int? id;
   String? backdropPath;
-  double? voteAverage;
+  dynamic voteAverage;
   String? overview;
   String? firstAirDate;
   List<String>? originCountry;

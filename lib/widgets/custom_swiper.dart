@@ -1,8 +1,8 @@
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:conditional_builder/conditional_builder.dart';
+
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_app/shared/global/end_points.dart';
 import 'package:movie_app/shared/global/responsive.dart';
@@ -18,6 +18,7 @@ class CustomSwiper extends StatefulWidget {
 
 class _CustomSwiperState extends State<CustomSwiper> {
   int currentIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return ConditionalBuilder(
@@ -75,14 +76,22 @@ class _CustomSwiperState extends State<CustomSwiper> {
               },
             ),
           ),
-          DotsIndicator(
-            dotsCount: widget.movieModel!.results!.length,
-            position: currentIndex.toDouble(),
-            decorator: DotsDecorator(
-              activeColor: Colors.green,
-            ),
-
-          )
+          // Container(
+          //   height: 100,
+          //   child: ListView(
+          //     scrollDirection: Axis.horizontal,
+          //     children: [
+          //       DotsIndicator(
+          //         dotsCount: widget.movieModel!.results!.length,
+          //         position: currentIndex.toDouble(),
+          //         decorator: DotsDecorator(
+          //           activeColor: Colors.green,
+          //         ),
+          //         mainAxisAlignment: MainAxisAlignment.start,
+          //       ),
+          //     ],
+          //   ),
+          // ),
         ],
       ),
     );
