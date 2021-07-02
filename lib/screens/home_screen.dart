@@ -1,4 +1,3 @@
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,6 +10,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(AppCubit.get(context).sessionSuccess);
     AppCubit.get(context).selectedCategory =
     AppCubit.get(context).categoryList[0];
     AppCubit.get(context).pageNumber = 1;

@@ -57,3 +57,32 @@ class GetTokenErrorState extends AppStates {
 
   GetTokenErrorState(this.error);
 }
+class GetSessionLoadingState extends AppStates {}
+
+class GetSessionSuccessState extends AppStates {}
+
+class GetSessionErrorState extends AppStates {
+  final String error;
+
+  GetSessionErrorState(this.error);
+}
+
+class GetGuestSessionLoadingState extends AppStates {}
+
+class GetGuestSessionSuccessState extends AppStates {}
+
+class GetGuestSessionErrorState extends AppStates {
+  final String error;
+
+  GetGuestSessionErrorState(this.error);
+}
+
+class GetSessionWithLoginLoadingState extends AppStates {}
+
+class GetSessionWithLoginSuccessState extends AppStates {}
+
+class GetSessionWithLoginErrorState extends AppStates {
+  final String error;
+
+  GetSessionWithLoginErrorState(this.error);
+}

@@ -39,7 +39,7 @@ ThemeData lightTheme = ThemeData(
     fontFamily: 'Lato',
     primaryColor: Colors.purple,
     accentColor: Colors.black38,
-    primarySwatch: Colors.purple,
+    primarySwatch: Colors.green,
     scaffoldBackgroundColor: Colors.white,
     appBarTheme: AppBarTheme(
       backwardsCompatibility: false,

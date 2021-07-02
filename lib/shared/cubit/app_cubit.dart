@@ -4,9 +4,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:movie_app/models/guest_session_model.dart';
 import 'package:movie_app/models/movie_model.dart';
 import 'package:movie_app/models/search_model.dart';
 import 'package:movie_app/models/search_tv.dart';
+import 'package:movie_app/models/session_model.dart';
+import 'package:movie_app/models/session_with_login_model.dart';
 import 'package:movie_app/models/token_model.dart';
 import 'package:movie_app/models/tv_model.dart';
 import 'package:movie_app/screens/favorites/favorites_screen.dart';
@@ -16,6 +19,8 @@ import 'package:movie_app/screens/tv_shows/tv_shows_screen.dart';
 import 'package:movie_app/shared/global/cache_helper.dart';
 import 'package:movie_app/shared/cubit/app_states.dart';
 import 'package:movie_app/shared/global/end_points.dart';
+// ignore: import_of_legacy_library_into_null_safe
+import 'package:url_launcher/url_launcher.dart';
 
 class AppCubit extends Cubit<AppStates> {
   AppCubit() : super(InitialState());
@@ -145,9 +150,7 @@ class AppCubit extends Cubit<AppStates> {
         url =
             'https://api.themoviedb.org/3/tv/popular?api_key=$kApiKey&language=en-US&page=$pageNumber';
     }
-    Dio()
-        .get(url!)
-        .then((value) {
+    Dio().get(url!).then((value) {
       tvModel = TvModel.fromJson(value.data);
       print(url);
       emit(GetTvCategorySuccessState());
@@ -198,14 +201,88 @@ class AppCubit extends Cubit<AppStates> {
       tokenModel = TokenModel.fromJson(value.data);
       token = tokenModel!.requestToken.toString();
       emit(GetTokenSuccessState());
-      Dio()
-          .get(
-              'https://www.themoviedb.org/authenticate/$token?redirect_to=http://www.yourapp.com/approved')
-          .then((value) {
-        print('go ahead');
-      });
+      print(token);
+      //_launchURL();
     }).catchError((onError) {
       emit(GetTokenErrorState(onError.toString()));
+    });
+  }
+
+  SessionModel? sessionModel;
+  bool sessionSuccess = false;
+
+  void getSession() {
+    emit(GetSessionLoadingState());
+    Dio().get(
+      'https://api.themoviedb.org/3/authentication/session/new?api_key=$kApiKey',
+      queryParameters: {'request_token': token},
+    ).then((value) {
+      sessionModel = SessionModel.fromJson(value.data);
+      if (sessionModel!.success == true) {
+        sessionSuccess = true;
+        session = sessionModel!.sessionId!;
+      }
+      emit(GetSessionSuccessState());
+      print(session);
+    }).catchError((onError) {
+      emit(GetSessionErrorState(onError.toString()));
+    });
+  }
+
+  launchURL() async {
+    String url = 'https://www.themoviedb.org/authenticate/$token';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  GuestSessionModel? guestSessionModel;
+  bool guestSessionSuccess = false;
+
+  void getGuestSession() {
+    emit(GetGuestSessionLoadingState());
+    Dio().get(
+      'https://api.themoviedb.org/3/authentication/guest_session/new?api_key=$kApiKey',
+    ).then((value) {
+      guestSessionModel = GuestSessionModel.fromJson(value.data);
+      if (guestSessionModel!.success == true) {
+        guestSessionSuccess = true;
+        session = guestSessionModel!.guestSessionId!;
+      }
+      emit(GetGuestSessionSuccessState());
+      print(guestSessionModel!.guestSessionId);
+      print(guestSessionModel!.expiresAt);
+    }).catchError((onError) {
+      emit(GetGuestSessionErrorState(onError.toString()));
+      print(onError.toString());
+    });
+  }
+
+  SessionWithLoginModel? sessionWithLoginModel;
+  //bool sessionSuccess = false;
+
+  void getSessionWithLogin({required String userName ,required String password }) {
+    emit(GetSessionWithLoginLoadingState());
+    Dio().get(
+      'https://api.themoviedb.org/3/authentication/token/validate_with_login?api_key=$kApiKey',
+      queryParameters: {'request_token': token,
+        'username': userName,
+        'password': password,
+      },
+    ).then((value) {
+      sessionWithLoginModel = SessionWithLoginModel.fromJson(value.data);
+      if (sessionWithLoginModel!.success == true) {
+        sessionSuccess = true;
+        session = sessionWithLoginModel!.requestToken!;
+      }
+      emit(GetSessionWithLoginSuccessState());
+      print(session);
+      print(token);
+      getSession();
+    }).catchError((onError) {
+      emit(GetSessionWithLoginErrorState(onError.toString()));
     });
   }
 }

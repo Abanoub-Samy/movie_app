@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:movie_app/screens/home_screen.dart';
+import 'package:movie_app/screens/authentication_screen.dart';
 import 'package:movie_app/screens/on_boarding/on_boarding_item.dart';
 import 'package:movie_app/shared/cubit/app_cubit.dart';
-import 'package:movie_app/shared/global/cache_helper.dart';
 
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -13,6 +12,12 @@ class OnBoardingScreen extends StatefulWidget {
 }
 
 class _OnBoardingScreenState extends State<OnBoardingScreen> {
+  @override
+  void initState() {
+    AppCubit.get(context).getToken();
+    super.initState();
+  }
+
   var boardController = PageController();
   List<BoardingModel> boarding = [
     BoardingModel(
@@ -54,13 +59,8 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
         actions: [
           TextButton(
               onPressed: () {
-                CacheHelper.saveData(key: 'onBoarding', value: true)
-                    .then((value) {
-                  if (value) {
-                    Navigator.pushReplacementNamed(
-                        context, HomeScreen.routeName);
-                  }
-                });
+                Navigator.pushReplacementNamed(
+                    context, AuthenticationScreen.routeName);
               },
               child: Text(
                 'Skip',
@@ -97,7 +97,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
             ),
           ),
           SizedBox(
-            height: 10,
+            height: 2,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -118,13 +118,8 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                 backgroundColor: Theme.of(context).primaryColor,
                 onPressed: () {
                   if (isLast) {
-                    CacheHelper.saveData(key: 'onBoarding', value: true)
-                        .then((value) {
-                      if (value) {
-                        Navigator.pushReplacementNamed(
-                            context, HomeScreen.routeName);
-                      }
-                    });
+                    Navigator.pushReplacementNamed(
+                        context, AuthenticationScreen.routeName);
                   }
                   boardController.nextPage(
                     duration: Duration(
@@ -139,9 +134,6 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                 ),
               ),
             ],
-          ),
-          SizedBox(
-            height: 20,
           ),
         ],
       ),
