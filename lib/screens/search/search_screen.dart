@@ -18,16 +18,19 @@ class SearchScreen extends StatelessWidget {
         appBar: AppBar(
           title: const Text('Search'),
           actions: [
-            IconButton(onPressed: (){
-              CacheHelper.saveData(key: 'onBoarding', value: false).then((value){
-                AppCubit.get(context).sessionSuccess = false;
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>OnBoardingScreen()),
-                );
-              });
-            }, icon: Icon(Icons.delete),),
+            IconButton(
+              onPressed: () {
+                CacheHelper.saveData(key: 'onBoarding', value: false)
+                    .then((value) {
+                  AppCubit.get(context).sessionSuccess = false;
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => OnBoardingScreen()),
+                  );
+                });
+              },
+              icon: Icon(Icons.delete),
+            ),
           ],
           bottom: TabBar(
             indicatorColor: Colors.green,

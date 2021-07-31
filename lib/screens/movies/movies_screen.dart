@@ -29,7 +29,7 @@ class MoviesScreen extends StatelessWidget {
                 children: [
                   buildHeaderSliverList(context, model),
                   ConditionalBuilder(
-                    condition: state is GetCategorySuccessState,
+                    condition: model!=null,
                     fallback: (context) => Center(
                       child: LinearProgressIndicator(
                         color: Colors.green,

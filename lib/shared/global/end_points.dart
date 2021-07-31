@@ -10,6 +10,7 @@ const kAccentColor = Color(0xfffe8785);
 const kApiKey = 'd4976a37fb39726f29ed4420cbee1e56';
 String token = '';
 String session = '';
+int? accountId = 0 ;
 
 const kCroppedPosterBaseURL = 'https://image.tmdb.org/t/p/w200/';
 

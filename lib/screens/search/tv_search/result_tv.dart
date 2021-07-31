@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:movie_app/screens/movies/movie_details/details_screen.dart';
+import 'package:movie_app/screens/tv_shows/tv_shows_details/tv_details_screen.dart';
 import 'package:movie_app/shared/cubit/app_cubit.dart';
 import 'package:movie_app/shared/global/end_points.dart';
 import 'package:movie_app/shared/global/responsive.dart';
@@ -25,7 +25,7 @@ class ResultsOfSearchTv extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => DetailsScreen(
+                          builder: (context) => TvDetailsScreen(
                                 type: 'search-tv',
                                 data: searchTvModel!.results![index],
                               )),

@@ -7,6 +7,7 @@ import 'package:movie_app/shared/cubit/app_cubit.dart';
 import 'package:movie_app/shared/cubit/app_states.dart';
 import 'package:movie_app/shared/global/cache_helper.dart';
 import 'package:movie_app/shared/global/end_points.dart';
+import 'package:movie_app/shared/global/responsive.dart';
 
 class LoginScreen extends StatefulWidget {
   static const routeName = '/login-screen';
@@ -25,12 +26,21 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return BlocConsumer<AppCubit, AppStates>(
       listener: (context, state) {
-        if (state is GetSessionSuccessState) {
+        if (state is GetAccountSuccessState) {
           CacheHelper.saveData(key: 'onBoarding', value: true).then((value) {
             if (value) {
               Navigator.pushReplacementNamed(context, HomeScreen.routeName);
             }
           });
+        }
+        else if (state is GetGuestSessionSuccessState) {
+          CacheHelper.saveData(key: 'onBoarding', value: true).then((value) {
+            if (value) {
+              Navigator.pushReplacementNamed(context, HomeScreen.routeName);
+            }
+          });
+        } else if (state is GetGuestSessionErrorState) {
+          print('You should approve first');
         }
       },
       builder: (context, state) {
@@ -58,14 +68,14 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
           body: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: EdgeInsets.all(Responsive().width(1, context)),
             child: Center(
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: EdgeInsets.all(Responsive().width(1, context)),
                       child: Row(
                         children: [
                           Text(
@@ -75,13 +85,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         ],
                       ),
                     ),
-                    const SizedBox(
-                      height: 40,
+                    SizedBox(
+                      height: Responsive().height(3, context),
                     ),
                     Form(
                       key: formKey,
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding:  EdgeInsets.all(Responsive().width(1, context)),
                         child: Column(
                           children: [
                             TextFormField(
@@ -90,7 +100,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 labelText: 'E-mail',
                                 prefixIcon: const Icon(Icons.mail),
                                 border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20),
+                                  borderRadius: BorderRadius.circular(Responsive().width(4, context)),
                                 ),
                               ),
                               controller: emailText,
@@ -101,8 +111,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 return null;
                               },
                             ),
-                            const SizedBox(
-                              height: 20,
+                             SizedBox(
+                              height: Responsive().height(1, context),
                             ),
                             TextFormField(
                               keyboardType: TextInputType.visiblePassword,
@@ -121,7 +131,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   },
                                 ),
                                 border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20),
+                                  borderRadius: BorderRadius.circular(Responsive().width(4, context)),
                                 ),
                               ),
                               controller: passwordText,
@@ -129,14 +139,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                 if (value!.isEmpty) {
                                   return 'please enter password';
                                 }
-                                // else if (value.length < 8) {
-                                //   return 'password must be 8 characters at least';
-                                // }
                                 return null;
                               },
                             ),
-                            const SizedBox(
-                              height: 20,
+                             SizedBox(
+                              height: Responsive().height(2, context),
                             ),
                             Container(
                               width: double.infinity,
@@ -158,8 +165,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                     Center(child: CircularProgressIndicator()),
                               ),
                             ),
-                            const SizedBox(
-                              height: 20,
+                             SizedBox(
+                              height: Responsive().height(2, context),
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -168,11 +175,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                   'Don\'t have an account ?',
                                   style: Theme.of(context).textTheme.subtitle1,
                                 ),
-                                const SizedBox(
-                                  width: 20,
+                                 SizedBox(
+                                  width: Responsive().width(1, context),
                                 ),
                                 TextButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    AppCubit.get(context).launchURL();
+                                  },
                                   child: const Text(
                                     'Register Now',
                                     style: TextStyle(
@@ -182,6 +191,16 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               ],
                             ),
+                             SizedBox(
+                              height: Responsive().width(3, context),
+                            ),
+                            Container(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                    onPressed: () {
+                                      AppCubit.get(context).getGuestSession();
+                                    },
+                                    child: Text('Guest'))),
                           ],
                         ),
                       ),

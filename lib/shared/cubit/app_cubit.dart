@@ -4,12 +4,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:movie_app/models/account_model.dart';
+import 'package:movie_app/models/get_favorite_model.dart';
 import 'package:movie_app/models/guest_session_model.dart';
 import 'package:movie_app/models/movie_model.dart';
 import 'package:movie_app/models/search_model.dart';
 import 'package:movie_app/models/search_tv.dart';
 import 'package:movie_app/models/session_model.dart';
 import 'package:movie_app/models/session_with_login_model.dart';
+import 'package:movie_app/models/set_favorite_model.dart';
 import 'package:movie_app/models/token_model.dart';
 import 'package:movie_app/models/tv_model.dart';
 import 'package:movie_app/screens/favorites/favorites_screen.dart';
@@ -19,6 +22,7 @@ import 'package:movie_app/screens/tv_shows/tv_shows_screen.dart';
 import 'package:movie_app/shared/global/cache_helper.dart';
 import 'package:movie_app/shared/cubit/app_states.dart';
 import 'package:movie_app/shared/global/end_points.dart';
+
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:url_launcher/url_launcher.dart';
 
@@ -30,7 +34,7 @@ class AppCubit extends Cubit<AppStates> {
   int? pageNumber;
   String? url;
   int currentIndex = 0;
-  String? selectedCategory;
+  String? selectedCategory = 'popular';
 
   List<Widget> screens = [
     MoviesScreen(),
@@ -223,7 +227,7 @@ class AppCubit extends Cubit<AppStates> {
         session = sessionModel!.sessionId!;
       }
       emit(GetSessionSuccessState());
-      print(session);
+      getAccountData();
     }).catchError((onError) {
       emit(GetSessionErrorState(onError.toString()));
     });
@@ -243,9 +247,11 @@ class AppCubit extends Cubit<AppStates> {
 
   void getGuestSession() {
     emit(GetGuestSessionLoadingState());
-    Dio().get(
+    Dio()
+        .get(
       'https://api.themoviedb.org/3/authentication/guest_session/new?api_key=$kApiKey',
-    ).then((value) {
+    )
+        .then((value) {
       guestSessionModel = GuestSessionModel.fromJson(value.data);
       if (guestSessionModel!.success == true) {
         guestSessionSuccess = true;
@@ -261,13 +267,13 @@ class AppCubit extends Cubit<AppStates> {
   }
 
   SessionWithLoginModel? sessionWithLoginModel;
-  //bool sessionSuccess = false;
-
-  void getSessionWithLogin({required String userName ,required String password }) {
+  void getSessionWithLogin(
+      {required String userName, required String password}) {
     emit(GetSessionWithLoginLoadingState());
     Dio().get(
       'https://api.themoviedb.org/3/authentication/token/validate_with_login?api_key=$kApiKey',
-      queryParameters: {'request_token': token,
+      queryParameters: {
+        'request_token': token,
         'username': userName,
         'password': password,
       },
@@ -278,11 +284,73 @@ class AppCubit extends Cubit<AppStates> {
         session = sessionWithLoginModel!.requestToken!;
       }
       emit(GetSessionWithLoginSuccessState());
-      print(session);
-      print(token);
       getSession();
     }).catchError((onError) {
       emit(GetSessionWithLoginErrorState(onError.toString()));
+    });
+  }
+
+  AccountModel? accountModel;
+  void getAccountData() {
+    emit(GetAccountLoadingState());
+    Dio()
+        .get(
+      'https://api.themoviedb.org/3/account?api_key=$kApiKey&session_id=$session',
+    )
+        .then((value) {
+      accountModel = AccountModel.fromJson(value.data);
+      accountId = accountModel!.id;
+      emit(GetAccountSuccessState());
+      getFavorite();
+    }).catchError((onError) {
+      print(onError.toString());
+      emit(GetAccountErrorState(onError));
+    });
+  }
+
+  SetFavoriteModel? setFavoriteModel;
+
+  void setFavorite(
+      {required String mediaType,
+      required int? mediaId,
+      required bool favorite}) {
+    emit(SetFavoriteLoadingState());
+    Dio().post(
+      'https://api.themoviedb.org/3/account/$accountId/favorite?api_key=$kApiKey&session_id=$session',
+      queryParameters: {
+        'media_type': mediaType,
+        'media_id': mediaId,
+        'favorite': favorite,
+      },
+    ).then((value) {
+      setFavoriteModel = SetFavoriteModel.fromJson(value.data);
+      print(setFavoriteModel!.statusMessage);
+      getFavorite();
+      emit(SetFavoriteSuccessState());
+    }).catchError((onError) {
+      emit(SetFavoriteErrorState(onError));
+      print(onError.toString());
+    });
+  }
+
+  GetFavoriteModel? getFavoriteModel;
+
+  void getFavorite() {
+    print(kApiKey);
+    print(session);
+    print(accountId);
+    emit(GetFavoriteLoadingState());
+    Dio()
+        .get(
+      'https://api.themoviedb.org/3/account/$accountId/favorite/movies?api_key=$kApiKey&session_id=$session&language=en-US&sort_by=created_at.asc&page=1',
+    )
+        .then((value) {
+      getFavoriteModel = GetFavoriteModel.fromJson(value.data);
+      print(getFavoriteModel!.totalResults);
+      emit(GetFavoriteSuccessState());
+    }).catchError((onError) {
+      emit(GetFavoriteErrorState(onError));
+      print(onError.toString());
     });
   }
 }

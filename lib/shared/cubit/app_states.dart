@@ -86,3 +86,33 @@ class GetSessionWithLoginErrorState extends AppStates {
 
   GetSessionWithLoginErrorState(this.error);
 }
+
+class SetFavoriteLoadingState extends AppStates {}
+
+class SetFavoriteSuccessState extends AppStates {}
+
+class SetFavoriteErrorState extends AppStates {
+  final String error;
+
+  SetFavoriteErrorState(this.error);
+}
+
+class GetFavoriteLoadingState extends AppStates {}
+
+class GetFavoriteSuccessState extends AppStates {}
+
+class GetFavoriteErrorState extends AppStates {
+  final String error;
+
+  GetFavoriteErrorState(this.error);
+}
+
+class GetAccountLoadingState extends AppStates {}
+
+class GetAccountSuccessState extends AppStates {}
+
+class GetAccountErrorState extends AppStates {
+  final String error;
+
+  GetAccountErrorState(this.error);
+}

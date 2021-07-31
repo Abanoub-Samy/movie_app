@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:movie_app/screens/authentication_screen.dart';
+import 'package:movie_app/screens/login_screen.dart';
 import 'package:movie_app/screens/on_boarding/on_boarding_item.dart';
 import 'package:movie_app/shared/cubit/app_cubit.dart';
-
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -60,7 +59,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
           TextButton(
               onPressed: () {
                 Navigator.pushReplacementNamed(
-                    context, AuthenticationScreen.routeName);
+                    context, LoginScreen.routeName);
               },
               child: Text(
                 'Skip',
@@ -119,7 +118,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                 onPressed: () {
                   if (isLast) {
                     Navigator.pushReplacementNamed(
-                        context, AuthenticationScreen.routeName);
+                        context, LoginScreen.routeName);
                   }
                   boardController.nextPage(
                     duration: Duration(

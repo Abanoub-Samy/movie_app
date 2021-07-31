@@ -3,15 +3,18 @@ import 'package:movie_app/models/movie_model.dart';
 import 'package:movie_app/screens/movies/movie_details/details_screen.dart';
 import 'package:movie_app/shared/global/end_points.dart';
 
-class MovieCard extends StatelessWidget {
+class MovieCard extends StatefulWidget {
   final Results model;
 
-  const MovieCard({Key? key, required this.model}) : super(key: key);
+  MovieCard({Key? key, required this.model}) : super(key: key);
 
   @override
+  _MovieCardState createState() => _MovieCardState();
+}
+
+class _MovieCardState extends State<MovieCard> {
+  @override
   Widget build(BuildContext context) {
-    IconData _likeIcon = Icons.favorite_border;
-    Color _likeIconColor = kSecondLightColor;
     return InkWell(
       onTap: () {
         Navigator.push(
@@ -19,36 +22,19 @@ class MovieCard extends StatelessWidget {
           MaterialPageRoute(
               builder: (context) => DetailsScreen(
                     type: 'movie-details',
-                    data: model,
+                    data: widget.model,
                   )),
         );
       },
       child: Container(
-        alignment: Alignment.topRight,
         padding: EdgeInsets.all(5.0),
-        child: GestureDetector(
-          onTap: () {
-            _likeIcon = _likeIcon == Icons.favorite_border
-                ? Icons.favorite
-                : Icons.favorite_border;
-            _likeIconColor = _likeIconColor == kSecondLightColor
-                ? kAccentColor
-                : kSecondLightColor;
-          },
-          child: Icon(
-            _likeIcon,
-            color: _likeIconColor,
-            size: 30,
-          ),
-        ),
         decoration: BoxDecoration(
           color: kSecondDarkColor,
           borderRadius: BorderRadius.circular(7.0),
           image: DecorationImage(
-            image: (model.posterPath != null)
-                ? NetworkImage(
-                        kCroppedPosterBaseURL + model.posterPath.toString())
-                    as ImageProvider
+            image: (widget.model.posterPath != null)
+                ? NetworkImage(kCroppedPosterBaseURL +
+                    widget.model.posterPath.toString()) as ImageProvider
                 : AssetImage('images/placeholder.png'),
             fit: BoxFit.fill,
           ),

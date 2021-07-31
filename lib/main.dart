@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:movie_app/screens/authentication_screen.dart';
 import 'package:movie_app/screens/home_screen.dart';
 import 'package:movie_app/screens/login_screen.dart';
 import 'package:movie_app/screens/on_boarding/on_boarding_screen.dart';
@@ -28,7 +27,7 @@ void main() async {
       providers: [
         BlocProvider(
           create: (BuildContext ctx) =>
-              AppCubit()..changeAppMode(fromShared: isDark),
+              AppCubit()..changeAppMode(fromShared: isDark)..getMoviesByCategory(),
         ),
       ],
       child: BlocConsumer<AppCubit, AppStates>(
@@ -55,7 +54,6 @@ class MyApp extends StatelessWidget {
           AppCubit.get(context).isDark ? ThemeMode.dark : ThemeMode.light,
       routes: {
         HomeScreen.routeName: (ctx) => HomeScreen(),
-        AuthenticationScreen.routeName: (ctx) => AuthenticationScreen(),
         LoginScreen.routeName: (ctx) => LoginScreen(),
       },
       home: widget,

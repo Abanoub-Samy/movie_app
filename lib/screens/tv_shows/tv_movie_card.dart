@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movie_app/models/tv_model.dart';
-import 'package:movie_app/screens/movies/movie_details/details_screen.dart';
+import 'package:movie_app/screens/tv_shows/tv_shows_details/tv_details_screen.dart';
 import 'package:movie_app/shared/global/end_points.dart';
 
 class TvMovieCard extends StatelessWidget {
@@ -17,7 +17,7 @@ class TvMovieCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => DetailsScreen(
+              builder: (context) => TvDetailsScreen(
                     type: 'tv-details',
                     data: model,
                   )),
