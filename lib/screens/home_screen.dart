@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie_app/shared/cubit/app_cubit.dart';
 import 'package:movie_app/shared/cubit/app_states.dart';
+import 'package:movie_app/shared/global/cache_helper.dart';
 import 'package:movie_app/shared/global/responsive.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -10,7 +11,8 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(AppCubit.get(context).sessionSuccess);
+    print(CacheHelper.getData(key: 'accountId'));
+    print(CacheHelper.getData(key: 'session'));
     AppCubit.get(context).selectedCategory =
     AppCubit.get(context).categoryList[0];
     AppCubit.get(context).pageNumber = 1;

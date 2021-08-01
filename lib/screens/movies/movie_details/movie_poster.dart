@@ -1,11 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:movie_app/shared/cubit/app_cubit.dart';
 import 'package:movie_app/shared/global/end_points.dart';
 import 'package:movie_app/shared/global/responsive.dart';
+import 'package:number_inc_dec/number_inc_dec.dart';
 
-class MoviePoster extends StatelessWidget {
+class MoviePoster extends StatefulWidget {
   final dynamic model;
 
   MoviePoster({required this.model});
+
+  @override
+  _MoviePosterState createState() => _MoviePosterState();
+}
+
+class _MoviePosterState extends State<MoviePoster> {
+  var controller = TextEditingController();
+
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +29,7 @@ class MoviePoster extends StatelessWidget {
             borderRadius: BorderRadius.only(bottomLeft: Radius.circular(40)),
             child: Image(
               image: NetworkImage(
-                kOriginalPosterBaseURL + model.posterPath.toString(),
+                kOriginalPosterBaseURL + widget.model.posterPath.toString(),
               ),
               fit: BoxFit.fill,
             ),
@@ -55,7 +65,7 @@ class MoviePoster extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          '${model.voteAverage}',
+                          '${widget.model.voteAverage}',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: Responsive().width(3, context),
@@ -79,7 +89,9 @@ class MoviePoster extends StatelessWidget {
                         Icons.star_border,
                         size: Responsive().height(4, context),
                       ),
-                      onTap: () {},
+                      onTap: () {
+                        _showMyDialog(context);
+                      },
                     ),
                     SizedBox(
                       height: Responsive().height(.5, context),
@@ -104,7 +116,7 @@ class MoviePoster extends StatelessWidget {
                       height: Responsive().height(.5, context),
                     ),
                     Text(
-                      '${model.popularity}',
+                      '${widget.model.popularity}',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: Responsive().width(3, context),
@@ -117,6 +129,42 @@ class MoviePoster extends StatelessWidget {
           ),
         ),
       ],
+    );
+
+  }
+
+  void _showMyDialog(context) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Rate Movie'),
+          content: Container(
+            child: NumberInputPrefabbed.directionalButtons(
+              controller: controller,
+              isInt: false,
+              incDecFactor: 0.5,
+              min: 0,
+              max: 10,
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.pop(context, 'Cancel'),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: (){
+                double value = double.parse(controller.text);
+                AppCubit.get(context).setRate(value: value, mediaId: widget.model.id);
+                Navigator.pop(context, 'OK');
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

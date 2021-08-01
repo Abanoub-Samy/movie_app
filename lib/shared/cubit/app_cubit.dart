@@ -8,6 +8,7 @@ import 'package:movie_app/models/account_model.dart';
 import 'package:movie_app/models/get_favorite_model.dart';
 import 'package:movie_app/models/guest_session_model.dart';
 import 'package:movie_app/models/movie_model.dart';
+import 'package:movie_app/models/rate_model.dart';
 import 'package:movie_app/models/search_model.dart';
 import 'package:movie_app/models/search_tv.dart';
 import 'package:movie_app/models/session_model.dart';
@@ -203,9 +204,9 @@ class AppCubit extends Cubit<AppStates> {
             'https://api.themoviedb.org/3/authentication/token/new?api_key=$kApiKey')
         .then((value) {
       tokenModel = TokenModel.fromJson(value.data);
-      token = tokenModel!.requestToken.toString();
+      CacheHelper.saveData(
+          key: 'token', value: tokenModel!.requestToken.toString());
       emit(GetTokenSuccessState());
-      print(token);
       //_launchURL();
     }).catchError((onError) {
       emit(GetTokenErrorState(onError.toString()));
@@ -219,12 +220,12 @@ class AppCubit extends Cubit<AppStates> {
     emit(GetSessionLoadingState());
     Dio().get(
       'https://api.themoviedb.org/3/authentication/session/new?api_key=$kApiKey',
-      queryParameters: {'request_token': token},
+      queryParameters: {'request_token': CacheHelper.getData(key: 'token')},
     ).then((value) {
       sessionModel = SessionModel.fromJson(value.data);
       if (sessionModel!.success == true) {
         sessionSuccess = true;
-        session = sessionModel!.sessionId!;
+        CacheHelper.saveData(key: 'session', value: sessionModel!.sessionId!);
       }
       emit(GetSessionSuccessState());
       getAccountData();
@@ -234,7 +235,8 @@ class AppCubit extends Cubit<AppStates> {
   }
 
   launchURL() async {
-    String url = 'https://www.themoviedb.org/authenticate/$token';
+    String url =
+        'https://www.themoviedb.org/authenticate/${CacheHelper.getData(key: 'token')}';
     if (await canLaunch(url)) {
       await launch(url);
     } else {
@@ -255,7 +257,8 @@ class AppCubit extends Cubit<AppStates> {
       guestSessionModel = GuestSessionModel.fromJson(value.data);
       if (guestSessionModel!.success == true) {
         guestSessionSuccess = true;
-        session = guestSessionModel!.guestSessionId!;
+        CacheHelper.saveData(
+            key: 'session', value: guestSessionModel!.guestSessionId!);
       }
       emit(GetGuestSessionSuccessState());
       print(guestSessionModel!.guestSessionId);
@@ -267,13 +270,14 @@ class AppCubit extends Cubit<AppStates> {
   }
 
   SessionWithLoginModel? sessionWithLoginModel;
+
   void getSessionWithLogin(
       {required String userName, required String password}) {
     emit(GetSessionWithLoginLoadingState());
     Dio().get(
       'https://api.themoviedb.org/3/authentication/token/validate_with_login?api_key=$kApiKey',
       queryParameters: {
-        'request_token': token,
+        'request_token': CacheHelper.getData(key: 'token'),
         'username': userName,
         'password': password,
       },
@@ -281,7 +285,8 @@ class AppCubit extends Cubit<AppStates> {
       sessionWithLoginModel = SessionWithLoginModel.fromJson(value.data);
       if (sessionWithLoginModel!.success == true) {
         sessionSuccess = true;
-        session = sessionWithLoginModel!.requestToken!;
+        CacheHelper.saveData(
+            key: 'session', value: sessionWithLoginModel!.requestToken!);
       }
       emit(GetSessionWithLoginSuccessState());
       getSession();
@@ -291,15 +296,16 @@ class AppCubit extends Cubit<AppStates> {
   }
 
   AccountModel? accountModel;
+
   void getAccountData() {
     emit(GetAccountLoadingState());
     Dio()
         .get(
-      'https://api.themoviedb.org/3/account?api_key=$kApiKey&session_id=$session',
+      'https://api.themoviedb.org/3/account?api_key=$kApiKey&session_id=${CacheHelper.getData(key: 'session')}',
     )
         .then((value) {
       accountModel = AccountModel.fromJson(value.data);
-      accountId = accountModel!.id;
+      CacheHelper.saveData(key: 'accountId', value: accountModel!.id);
       emit(GetAccountSuccessState());
       getFavorite();
     }).catchError((onError) {
@@ -316,7 +322,7 @@ class AppCubit extends Cubit<AppStates> {
       required bool favorite}) {
     emit(SetFavoriteLoadingState());
     Dio().post(
-      'https://api.themoviedb.org/3/account/$accountId/favorite?api_key=$kApiKey&session_id=$session',
+      'https://api.themoviedb.org/3/account/${CacheHelper.getData(key: 'accountId')}/favorite?api_key=$kApiKey&session_id=${CacheHelper.getData(key: 'session')}',
       queryParameters: {
         'media_type': mediaType,
         'media_id': mediaId,
@@ -337,12 +343,12 @@ class AppCubit extends Cubit<AppStates> {
 
   void getFavorite() {
     print(kApiKey);
-    print(session);
-    print(accountId);
+    print(CacheHelper.getData(key: 'session'));
+    print(CacheHelper.getData(key: 'accountId'));
     emit(GetFavoriteLoadingState());
     Dio()
         .get(
-      'https://api.themoviedb.org/3/account/$accountId/favorite/movies?api_key=$kApiKey&session_id=$session&language=en-US&sort_by=created_at.asc&page=1',
+      'https://api.themoviedb.org/3/account/${CacheHelper.getData(key: 'accountId')}/favorite/movies?api_key=$kApiKey&session_id=${CacheHelper.getData(key: 'session')}&language=en-US&sort_by=created_at.asc&page=1',
     )
         .then((value) {
       getFavoriteModel = GetFavoriteModel.fromJson(value.data);
@@ -350,6 +356,28 @@ class AppCubit extends Cubit<AppStates> {
       emit(GetFavoriteSuccessState());
     }).catchError((onError) {
       emit(GetFavoriteErrorState(onError));
+      print(onError.toString());
+    });
+  }
+
+  RateModel? rateModel;
+
+  void setRate({
+    required double? value,
+    required int? mediaId,
+  }) {
+    Dio().post(
+      'https://api.themoviedb.org/3/movie/$mediaId/rating?api_key=$kApiKey',
+      queryParameters: {
+        'value': value,
+        'media_id': mediaId,
+        'guest_session_id':CacheHelper.getData(key: 'session'),
+        'session_id':CacheHelper.getData(key: 'session'),
+      },
+    ).then((value) {
+      rateModel = RateModel.fromJson(value.data);
+      print(rateModel!.statusMessage);
+    }).catchError((onError) {
       print(onError.toString());
     });
   }
